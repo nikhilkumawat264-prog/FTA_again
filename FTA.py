@@ -203,6 +203,7 @@ def main_app(user_id):
                 if description and amount:
                     add_transaction(user_id, str(transaction_date), description, amount, category)
                     st.success("Transaction added successfully!")
+                    st.rerun()
                 else:
                     st.error("Please fill in the description and amount.")
     
@@ -256,6 +257,7 @@ def main_app(user_id):
                 if person and loan_amount:
                     add_lending_loan(user_id, str(lending_date), person, loan_amount, loan_type)
                     st.success("Record added successfully!")
+                    st.rerun()
                 else:
                     st.error("Please fill in the person's name and amount.")
 
