@@ -193,7 +193,7 @@ def main_app(user_id):
             transaction_type = st.selectbox("Type", ["Expense", "Income"])
             amount_input = st.number_input("Amount", min_value=0.01, format="%.2f")
             description = st.text_input("Description")
-            amount = st.number_input("Amount", min_value=0.01, format="%.2f")
+            
 
             # Updated list of categories
             categories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Trip", "Education/Fees", "Services", "Other"]
