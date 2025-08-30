@@ -4,6 +4,9 @@ from firebase_admin import credentials, firestore, auth, exceptions
 import pandas as pd
 from datetime import date, timedelta
 import plotly.express as px
+from PIL import Image
+import io
+import os
 
 # Set the page to wide layout at the very beginning of the script
 st.set_page_config(layout="wide")
@@ -47,11 +50,9 @@ def get_current_user_id():
 
 # --- Authentication Functions ---
 def login_page():
-    """Displays the login and signup page."""
-    st.image("images/Untitled-design.jpg", width=150)
+    
     st.title("Welcome to Budget Buddy!")
-    st.markdown("Please log in or create an account to continue.")
-
+    st.write("Please log in or sign up to continue.")
     tab1, tab2 = st.tabs(["Login", "Sign Up"])
 
     with tab1:
