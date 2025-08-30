@@ -222,17 +222,20 @@ def main_app(user_id):
         transactions_df['month'] = transactions_df['date'].dt.to_period('M').astype(str)
         
         with daily_col:
-            daily_expenses = transactions_df.groupby(transactions_df['date'].dt.date)['amount'].sum().reset_index()
+            daily_expenses = transactions_df[transactions_df['amount'] < 0].groupby(transactions_df['date'].dt.date)['amount'].sum().reset_index()
+            daily_expenses['amount'] = daily_expenses['amount'].abs()
             fig_daily = px.bar(daily_expenses, x='date', y='amount', title='Daily Expenses')
             st.plotly_chart(fig_daily, use_container_width=True, config={'staticPlot': True})
 
         with weekly_col:
-            weekly_expenses = transactions_df.groupby('week')['amount'].sum().reset_index()
+            weekly_expenses = transactions_df[transactions_df['amount'] < 0].groupby('week')['amount'].sum().reset_index()
+            weekly_expenses['amount'] = weekly_expenses['amount'].abs()
             fig_weekly = px.bar(weekly_expenses, x='week', y='amount', title='Weekly Expenses')
             st.plotly_chart(fig_weekly, use_container_width=True, config={'staticPlot': True})
         
         with monthly_col:
-            monthly_expenses = transactions_df.groupby('month')['amount'].sum().reset_index()
+            monthly_expenses = transactions_df[transactions_df['amount'] < 0].groupby('month')['amount'].sum().reset_index()
+            monthly_expenses['amount'] = monthly_expenses['amount'].abs()
             fig_monthly = px.bar(monthly_expenses, x='month', y='amount', title='Monthly Expenses')
             st.plotly_chart(fig_monthly, use_container_width=True, config={'staticPlot': True})
 
