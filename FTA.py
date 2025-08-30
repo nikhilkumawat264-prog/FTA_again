@@ -348,10 +348,27 @@ def main_app(user_id):
             )    
         st.plotly_chart(fig_goodbad_pie, use_container_width=True, config={'staticPlot': True})    
 
-            
-        
+    with goodbad_text_col:
+        st.subheader("🤔 Good vs. Bad Expenses")
+        bad_categories = ["Entertainment", "Food", "Trip"]
 
-           
+        if not transactions_df.empty:
+            expense_df = transactions_df[transactions_df['amount'] < 0].copy()
+            expense_df['amount'] = expense_df['amount'].abs()
+            bad_expenses_amount = expense_df[expense_df['category'].isin(bad_categories)]['amount'].sum()
+
+        else:
+            bad_expenses_amount = 0
+
+        st.markdown(f"**Total amount you could have saved:** ₹{bad_expenses_amount:,.2f}")
+         # Actionable suggestion text
+        suggestion_text = f"""
+        💡 **Savings Suggestion:**  
+        Try reducing your spending on entertainment, dining out, and trips next month.
+        Setting monthly limits or finding free/low-cost alternatives can significantly help save money.
+        """
+    
+   
 
 
     st.markdown("---")
