@@ -316,38 +316,42 @@ def main_app(user_id):
         
         # Ensure transactions_df is not empty before filtering
         if not transactions_df.empty:
-            bad_expenses_df = transactions_df[transactions_df['category'].isin(bad_categories)]
-            good_expenses_df = transactions_df[~transactions_df['category'].isin(bad_categories)]
-            total_bad_expenses = bad_expenses_df['amount'].sum()
-        else:
-            bad_expenses_df = pd.DataFrame()
-            good_expenses_df = pd.DataFrame()
-            total_bad_expenses = 0
-            
-        st.markdown(f"**Total amount you could have saved:** ₹{total_bad_expenses:,.2f}")
-        
-        st.subheader("💡 Suggestions")
-        st.info(f"You could save approximately **₹{total_bad_expenses:,.2f}** next month by controlling your spending on entertainment, food, and trips.")
-        
-    with goodbad_chart_col:
-        st.subheader("Donut Pie Chart of Good vs Bad Expenses")
-        if not transactions_df.empty:
-            good_expenses_amount = good_expenses_df['amount'].sum()
+            # Filter for expenses only (amount < 0)
+            expense_df = transactions_df[transactions_df['amount'] < 0].copy()
+            expense_df['amount'] = expense_df['amount'].abs()  # make all values positive
+            bad_expenses_df = expense_df[expense_df['category'].isin(bad_categories)]
+            good_expenses_df = expense_df[~expense_df['category'].isin(bad_categories)]
             bad_expenses_amount = bad_expenses_df['amount'].sum()
-            goodbad_summary = pd.DataFrame({
-                'Expense Type': ['Good Expenses', 'Bad Expenses'],
-                'Amount': [good_expenses_amount, bad_expenses_amount]
-            })
+            good_expenses_amount = good_expenses_df['amount'].sum()
+
+        else:
+            bad_expenses_df = 0
+            good_expenses_df = 0
+
+        # Prepare the summary DataFrame
+        goodbad_summary = pd.DataFrame({
+            'Expense Type': ['Good Expenses', 'Bad Expenses'],
+            'Amount': [good_expenses_amount, bad_expenses_amount]
+        })    
+        # Only plot if there is data
+        if goodbad_summary['Amount'].sum() == 0:
+            st.info("No expense data to analyze for good vs bad expenses.")
+        else:
             fig_goodbad_pie = px.pie(
                 goodbad_summary,
                 names='Expense Type',
                 values='Amount',
                 title='Good vs Bad Expenses',
-                hole=0.5
-            )
-            st.plotly_chart(fig_goodbad_pie, use_container_width=True, config={'staticPlot': True})
-        else:
-            st.info("No expense data to analyze.")
+                hole=0.5,
+                color='Expense Type',
+                color_discrete_map={'Good Expenses': 'rgb(0,200,150)', 'Bad Expenses': 'rgb(200,50,50)'}
+            )    
+        st.plotly_chart(fig_goodbad_pie, use_container_width=True, config={'staticPlot': True})    
+
+            
+        
+
+           
 
 
     st.markdown("---")
