@@ -169,7 +169,7 @@ def main_app(user_id):
     # --- Top Row: Title and Summary ---
     title_col, summary_col = st.columns([1, 1])
     with title_col:
-        st.title("💰 Personal Finance Tracker")
+        st.title("💰 BudgetBuddy")
     with summary_col:
         st.subheader("📊 Overall Summary")
 
