@@ -239,14 +239,35 @@ def main_app(user_id):
             fig_monthly = px.bar(monthly_expenses, x='month', y='amount', title='Monthly Expenses')
             st.plotly_chart(fig_monthly, use_container_width=True, config={'staticPlot': True})
 
-        category_expenses = transactions_df.groupby('category')['amount'].sum().reset_index()
-        fig_category_pie = px.pie(category_expenses, 
-            names='category', 
-            values='amount', 
-            title='Expenses by Category',
-            hole=0.4  # This makes it donut shaped
-)
-        st.plotly_chart(fig_category_pie, use_container_width=True, config={'staticPlot': True})    
+        expense_df = transactions_df[transactions_df['amount'] < 0].copy()
+        expense_df['amount'] = expense_df['amount'].abs()  # Convert to positive values for the chart
+        all_categories = [
+            "Food",
+            "Transport",
+            "Shopping",
+            "Bills",
+            "Entertainment",
+            "Trip",
+            "Education/Fees",
+            "Services",
+            "Other"
+        ]    
+
+        category_expenses = expense_df.groupby('category')['amount'].sum().reset_index()
+        category_expenses = category_expenses.set_index('category').reindex(all_categories, fill_value=0).reset_index()
+        # Display pie chart only if there are expenses recorded
+        if category_expenses['amount'].sum() == 0:
+            st.info("No expense data recorded for any category.")
+        else:
+            fig_category_pie = px.pie(
+                category_expenses,
+                names='category',
+                values='amount',
+                title='Expenses by Category',
+                hole=0.4
+            )
+            st.plotly_chart(fig_category_pie, use_container_width=True, config={'staticPlot': True})
+          
     else:
         # Fallback for empty transactions data
         with daily_col:
