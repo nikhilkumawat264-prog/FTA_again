@@ -172,12 +172,16 @@ def main_app(user_id):
         st.title("💰 Personal Finance Tracker")
     with summary_col:
         st.subheader("📊 Overall Summary")
-        
-        total_expenses = transactions_df['amount'].sum() if not transactions_df.empty else 0
+
+        total_income = transactions_df[transactions_df['amount'] > 0]['amount'].sum() if not transactions_df.empty else 0
+        total_expenses = transactions_df[transactions_df['amount'] < 0]['amount'].sum() if not transactions_df.empty else 0
+        net_balance = total_income + total_expenses  # because expenses are negative
         total_lent = lending_df[lending_df['type'] == 'Lent']['amount'].sum() if not lending_df.empty else 0
         total_loan = lending_df[lending_df['type'] == 'Loan']['amount'].sum() if not lending_df.empty else 0
         
+        st.markdown(f"**Total Income:** ₹{total_income:,.2f}")
         st.markdown(f"**Overall Expenses:** ₹{total_expenses:,.2f}")
+        st.markdown(f"**Net Balance:** ₹{net_balance:,.2f}")
         st.markdown(f"**Overall Money Lent:** ₹{total_lent:,.2f}")
         st.markdown(f"**Overall Money Taken as Loan:** ₹{total_loan:,.2f}")
         
@@ -198,7 +202,7 @@ def main_app(user_id):
             # Updated list of categories
             categories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Trip", "Education/Fees", "Services", "Other"]
             
-            suggested_cat = suggest_category(description)
+            suggested_cat = suggest_category(description) if transaction_type == "Expense" else "Other" 
             category = st.selectbox("Category", options=categories, index=categories.index(suggested_cat))
 
             submitted = st.form_submit_button("Add Transaction")
