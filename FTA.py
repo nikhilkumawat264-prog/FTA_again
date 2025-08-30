@@ -48,7 +48,8 @@ def get_current_user_id():
 # --- Authentication Functions ---
 def login_page():
     """Displays the login and signup page."""
-    st.title("Welcome to Personal Finance Tracker")
+    st.image("images/Untitled-design.jpg", width=150)
+    st.title("Welcome to Budget Buddy!")
     st.markdown("Please log in or create an account to continue.")
 
     tab1, tab2 = st.tabs(["Login", "Sign Up"])
