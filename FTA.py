@@ -346,7 +346,7 @@ def main_app(user_id):
                 color='Expense Type',
                 color_discrete_map={'Good Expenses': 'rgb(0,200,150)', 'Bad Expenses': 'rgb(200,50,50)'}
             )    
-        st.plotly_chart(fig_goodbad_pie, use_container_width=True, config={'staticPlot': True})    
+            st.plotly_chart(fig_goodbad_pie, use_container_width=True, config={'staticPlot': True})    
 
     with goodbad_text_col:
         st.subheader("🤔 Good vs. Bad Expenses")
